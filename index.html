@@ -84,7 +84,7 @@
 
                     <div className="mt-auto pt-2 flex items-center text-[8px] md:text-[11px] font-medium uppercase tracking-widest text-black/60">
                         <a href={headline.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 md:gap-2 hover:text-black transition-colors">
-                            <span>Read</span> <i data-lucide="external-link" style={{width: '10px', height: '10px'}}></i>
+                            <span>Leggi</span> <i data-lucide="external-link" style={{width: '10px', height: '10px'}}></i>
                         </a>
                     </div>
                 </div>
@@ -96,16 +96,16 @@
                 <div className="bg-white border border-black/10 p-8 shadow-sm">
                     <div className="flex items-center gap-3 mb-6 border-b border-black/5 pb-4">
                         <i data-lucide="sticky-note" className="text-black/40"></i>
-                        <h2 className="font-serif text-xl italic">Morning Reflections</h2>
+                        <h2 className="font-serif text-xl italic">Riflessioni del Mattino</h2>
                     </div>
                     <textarea
                         value={value}
                         onChange={(e) => onChange(e.target.value)}
-                        placeholder="Note something down..."
+                        placeholder="Scrivi qualcosa..."
                         className="w-full h-[300px] resize-none bg-transparent font-sans text-lg leading-relaxed focus:outline-none placeholder:text-black/20"
                     />
                     <div className="mt-4 text-[10px] font-mono text-black/30 uppercase tracking-widest">
-                        Auto-saved to local storage
+                        Salvataggio automatico locale
                     </div>
                 </div>
             );
@@ -132,18 +132,18 @@
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose}></div>
                     <div className="relative w-full max-w-md bg-white p-8 shadow-2xl">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="font-serif text-2xl italic">Add New Headline</h2>
+                            <h2 className="font-serif text-2xl italic">Aggiungi Testata</h2>
                             <button onClick={onClose} className="text-black/40 hover:text-black">
                                 <i data-lucide="x"></i>
                             </button>
                         </div>
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">Source Name</label>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">Nome Testata</label>
                                 <input type="text" required value={source} onChange={(e) => setSource(e.target.value)} className="w-full border-b border-black/20 py-2 focus:outline-none focus:border-black" />
                             </div>
                             <div>
-                                <label className="block text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">Headline Title</label>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">Titolo</label>
                                 <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border-b border-black/20 py-2 focus:outline-none focus:border-black" />
                             </div>
                             <div>
@@ -151,7 +151,7 @@
                                 <input type="url" required value={url} onChange={(e) => setUrl(e.target.value)} className="w-full border-b border-black/20 py-2 focus:outline-none focus:border-black" />
                             </div>
                             <button type="submit" className="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-xs hover:bg-black/80">
-                                Add to Dashboard
+                                Aggiungi alla Dashboard
                             </button>
                         </form>
                     </div>
@@ -217,12 +217,12 @@
 
             return (
                 <div className="min-h-screen pb-20">
-                    <header className="max-w-7xl mx-auto px-6 pt-12 pb-16 border-b border-black/10">
+                    <header className="max-w-7xl mx-auto px-6 pt-8 pb-8 border-b border-black/10">
                         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3 text-black/40">
                                     <i data-lucide="newspaper" style={{width: '20px'}}></i>
-                                    <span className="text-[10px] font-bold uppercase tracking-[0.3em] font-mono">Morning Edition</span>
+                                    <span className="text-[10px] font-bold uppercase tracking-[0.3em] font-mono">Edizione Mattutina</span>
                                 </div>
                                 <h1 className="text-6xl md:text-8xl font-serif font-bold tracking-tighter leading-none">
                                     Daily <span className="italic font-normal">Brief</span>
@@ -234,19 +234,19 @@
                                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </div>
                                 <div className="text-sm font-serif italic text-black/40">
-                                    {currentTime.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                    {currentTime.toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                                 </div>
                             </div>
                         </div>
                     </header>
 
-                    <main className="max-w-7xl mx-auto px-6 mt-12">
+                    <main className="max-w-7xl mx-auto px-6 mt-6">
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                             <div className="lg:col-span-2">
                                 <div className="flex justify-between items-center mb-8">
-                                    <h2 className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/40 font-mono">Curated Headlines</h2>
+                                    <h2 className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/40 font-mono">Testate Selezionate</h2>
                                     <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-black/60 transition-colors">
-                                        <i data-lucide="plus" style={{width: '16px'}}></i> Add Source
+                                        <i data-lucide="plus" style={{width: '16px'}}></i> Aggiungi Fonte
                                     </button>
                                 </div>
                                 <div className="editorial-grid">
@@ -256,12 +256,12 @@
                                 </div>
                             </div>
                             <div className="space-y-8">
-                                <h2 className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/40 font-mono">Personal Ledger</h2>
+                                <h2 className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/40 font-mono">Note Personali</h2>
                                 <Notepad value={note} onChange={setNote} />
                                 <div className="p-8 bg-black text-white">
-                                    <h3 className="font-serif text-xl mb-4 italic">Morning Ritual</h3>
+                                    <h3 className="font-serif text-xl mb-4 italic">Rituale del Mattino</h3>
                                     <p className="text-sm text-white/60 leading-relaxed">
-                                        Start your day with clarity. Review the world's most trusted sources, note down your priorities, and set the tone for a productive day ahead.
+                                        Inizia la giornata con chiarezza. Consulta le fonti più affidabili, annota le tue priorità e dai il giusto tono alla tua giornata.
                                     </p>
                                 </div>
                             </div>
@@ -271,8 +271,8 @@
                     <AddHeadlineModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={addHeadline} />
 
                     <footer className="max-w-7xl mx-auto px-6 mt-24 pt-8 border-t border-black/5 flex justify-between items-center text-[10px] font-mono text-black/30 uppercase tracking-[0.2em]">
-                        <div>© {new Date().getFullYear()} Morning Headlines</div>
-                        <div>Crafted for Focus</div>
+                        <div>© {new Date().getFullYear()} Rassegna Stampa</div>
+                        <div>Creato per la Concentrazione</div>
                     </footer>
                 </div>
             );
