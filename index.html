@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rassegna Stampa</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body {
+            background-color: #F5F5F0;
+            color: #1A1A1A;
+            font-family: 'Inter', sans-serif;
+        }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        .editorial-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1px;
+            background-color: #1A1A1A;
+            border: 1px solid #1A1A1A;
+        }
+        
+        .editorial-card {
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+        .editorial-card:hover {
+            background-color: #FDFDFB;
+        }
+        
+        /* Custom scrollbar */
+        textarea::-webkit-scrollbar {
+            width: 4px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #1A1A1A20;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        const HeadlineCard = ({ headline, onDelete }) => {
+            const displayTitle = headline.title.split(':')[0].trim();
+            
+            return (
+                <div className="editorial-card group relative flex flex-col h-full min-h-[120px] md:min-h-[200px] p-4 md:p-8">
+                    <div className="flex justify-between items-start mb-2 md:mb-4">
+                        <span className="text-[8px] md:text-[10px] font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] text-black/40 font-mono truncate mr-2">
+                            {headline.source}
+                        </span>
+                        <button
+                            onClick={() => onDelete(headline.id)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:text-red-600"
+                        >
+                            <i data-lucide="trash-2" style={{width: '12px', height: '12px'}}></i>
+                        </button>
+                    </div>
+                    
+                    <h3 className="font-serif text-sm md:text-2xl leading-tight mb-2 md:mb-6 flex-grow group-hover:italic transition-all line-clamp-3">
+                        <a href={headline.url} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-1 underline-offset-2 md:underline-offset-4">
+                            {displayTitle}
+                        </a>
+                    </h3>
+
+                    <div className="mt-auto pt-2 flex items-center text-[8px] md:text-[11px] font-medium uppercase tracking-widest text-black/60">
+                        <a href={headline.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 md:gap-2 hover:text-black transition-colors">
+                            <span>Read</span> <i data-lucide="external-link" style={{width: '10px', height: '10px'}}></i>
+                        </a>
+                    </div>
+                </div>
+            );
+        };
+
+        const Notepad = ({ value, onChange }) => {
+            return (
+                <div className="bg-white border border-black/10 p-8 shadow-sm">
+                    <div className="flex items-center gap-3 mb-6 border-b border-black/5 pb-4">
+                        <i data-lucide="sticky-note" className="text-black/40"></i>
+                        <h2 className="font-serif text-xl italic">Morning Reflections</h2>
+                    </div>
+                    <textarea
+                        value={value}
+                        onChange={(e) => onChange(e.target.value)}
+                        placeholder="Note something down..."
+                        className="w-full h-[300px] resize-none bg-transparent font-sans text-lg leading-relaxed focus:outline-none placeholder:text-black/20"
+                    />
+                    <div className="mt-4 text-[10px] font-mono text-black/30 uppercase tracking-widest">
+                        Auto-saved to local storage
+                    </div>
+                </div>
+            );
+        };
+
+        const AddHeadlineModal = ({ isOpen, onClose, onAdd }) => {
+            const [title, setTitle] = useState('');
+            const [url, setUrl] = useState('');
+            const [source, setSource] = useState('');
+
+            if (!isOpen) return null;
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (title && url && source) {
+                    onAdd(title, url, source);
+                    setTitle(''); setUrl(''); setSource('');
+                    onClose();
+                }
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose}></div>
+                    <div className="relative w-full max-w-md bg-white p-8 shadow-2xl">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="font-serif text-2xl italic">Add New Headline</h2>
+                            <button onClick={onClose} className="text-black/40 hover:text-black">
+                                <i data-lucide="x"></i>
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">Source Name</label>
+                                <input type="text" required value={source} onChange={(e) => setSource(e.target.value)} className="w-full border-b border-black/20 py-2 focus:outline-none focus:border-black" />
+                            </div>
+                            <div>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">Headline Title</label>
+                                <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border-b border-black/20 py-2 focus:outline-none focus:border-black" />
+                            </div>
+                            <div>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-black/40 mb-2">URL</label>
+                                <input type="url" required value={url} onChange={(e) => setUrl(e.target.value)} className="w-full border-b border-black/20 py-2 focus:outline-none focus:border-black" />
+                            </div>
+                            <button type="submit" className="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-xs hover:bg-black/80">
+                                Add to Dashboard
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const getInitialHeadlines = () => {
+                const isSaturday = new Date().getDay() === 6;
+                const base = [
+                    { id: 'ilpost', source: 'Il Post', title: 'Il Post: Le notizie, spiegate bene', url: 'https://www.ilpost.it/' },
+                    { id: 'internazionale', source: 'Internazionale', title: 'Internazionale: Il meglio dei giornali', url: 'https://www.internazionale.it/' },
+                    { id: 'ap', source: 'Associated Press', title: 'AP News: Breaking News', url: 'https://apnews.com/' },
+                    { id: 'reuters', source: 'Reuters', title: 'Reuters: World News', url: 'https://www.reuters.com/' },
+                    { id: 'nyt', source: 'New York Times', title: 'The New York Times: Journalism', url: 'https://www.nytimes.com/' },
+                    { id: 'athletic', source: 'The Athletic', title: 'The Athletic: NFL Coverage', url: 'https://www.nytimes.com/athletic/nfl/' },
+                ];
+
+                if (isSaturday) {
+                    const dacosta = { id: 'dacosta', source: 'Da Costa a Costa', title: 'Da Costa a Costa: Newsletter', url: 'https://www.ilpost.it/newsletter/da-costa-a-costa/' };
+                    const ilpost = base.find(h => h.id === 'ilpost');
+                    const athletic = base.find(h => h.id === 'athletic');
+                    const others = base.filter(h => h.id !== 'ilpost' && h.id !== 'athletic');
+                    return [dacosta, ilpost, ...others, athletic];
+                }
+                return base;
+            };
+
+            const [headlines, setHeadlines] = useState(() => {
+                const saved = localStorage.getItem('headlines_v2');
+                return saved ? JSON.parse(saved) : getInitialHeadlines();
+            });
+
+            const [note, setNote] = useState(() => localStorage.getItem('morning_note') || '');
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [currentTime, setCurrentTime] = useState(new Date());
+
+            useEffect(() => {
+                localStorage.setItem('headlines_v2', JSON.stringify(headlines));
+            }, [headlines]);
+
+            useEffect(() => {
+                localStorage.setItem('morning_note', note);
+            }, [note]);
+
+            useEffect(() => {
+                const timer = setInterval(() => setCurrentTime(new Date()), 60000);
+                lucide.createIcons();
+                return () => clearInterval(timer);
+            }, []);
+
+            useEffect(() => {
+                lucide.createIcons();
+            }, [headlines, isModalOpen]);
+
+            const addHeadline = (title, url, source) => {
+                const newH = { id: Math.random().toString(36).substr(2, 9), title, url, source };
+                setHeadlines([newH, ...headlines]);
+            };
+
+            const deleteHeadline = (id) => setHeadlines(headlines.filter(h => h.id !== id));
+
+            return (
+                <div className="min-h-screen pb-20">
+                    <header className="max-w-7xl mx-auto px-6 pt-12 pb-16 border-b border-black/10">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3 text-black/40">
+                                    <i data-lucide="newspaper" style={{width: '20px'}}></i>
+                                    <span className="text-[10px] font-bold uppercase tracking-[0.3em] font-mono">Morning Edition</span>
+                                </div>
+                                <h1 className="text-6xl md:text-8xl font-serif font-bold tracking-tighter leading-none">
+                                    Daily <span className="italic font-normal">Brief</span>
+                                </h1>
+                            </div>
+                            <div className="flex flex-col items-start md:items-end gap-2">
+                                <div className="flex items-center gap-2 text-black/60 font-mono text-xs uppercase tracking-widest">
+                                    <i data-lucide="clock" style={{width: '14px'}}></i>
+                                    {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                                <div className="text-sm font-serif italic text-black/40">
+                                    {currentTime.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <main className="max-w-7xl mx-auto px-6 mt-12">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                            <div className="lg:col-span-2">
+                                <div className="flex justify-between items-center mb-8">
+                                    <h2 className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/40 font-mono">Curated Headlines</h2>
+                                    <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:text-black/60 transition-colors">
+                                        <i data-lucide="plus" style={{width: '16px'}}></i> Add Source
+                                    </button>
+                                </div>
+                                <div className="editorial-grid">
+                                    {headlines.map(h => (
+                                        <HeadlineCard key={h.id} headline={h} onDelete={deleteHeadline} />
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="space-y-8">
+                                <h2 className="text-[10px] font-bold uppercase tracking-[0.4em] text-black/40 font-mono">Personal Ledger</h2>
+                                <Notepad value={note} onChange={setNote} />
+                                <div className="p-8 bg-black text-white">
+                                    <h3 className="font-serif text-xl mb-4 italic">Morning Ritual</h3>
+                                    <p className="text-sm text-white/60 leading-relaxed">
+                                        Start your day with clarity. Review the world's most trusted sources, note down your priorities, and set the tone for a productive day ahead.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+
+                    <AddHeadlineModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={addHeadline} />
+
+                    <footer className="max-w-7xl mx-auto px-6 mt-24 pt-8 border-t border-black/5 flex justify-between items-center text-[10px] font-mono text-black/30 uppercase tracking-[0.2em]">
+                        <div>© {new Date().getFullYear()} Morning Headlines</div>
+                        <div>Crafted for Focus</div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
