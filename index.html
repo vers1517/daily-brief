@@ -163,16 +163,16 @@
             const getInitialHeadlines = () => {
                 const isSaturday = new Date().getDay() === 6;
                 const base = [
-                    { id: 'ilpost', source: 'Il Post', title: 'Il Post: Le notizie, spiegate bene', url: 'https://www.ilpost.it/' },
-                    { id: 'internazionale', source: 'Internazionale', title: 'Internazionale: Il meglio dei giornali', url: 'https://www.internazionale.it/' },
-                    { id: 'ap', source: 'Associated Press', title: 'AP News: Breaking News', url: 'https://apnews.com/' },
-                    { id: 'reuters', source: 'Reuters', title: 'Reuters: World News', url: 'https://www.reuters.com/' },
-                    { id: 'nyt', source: 'New York Times', title: 'The New York Times: Journalism', url: 'https://www.nytimes.com/' },
-                    { id: 'athletic', source: 'The Athletic', title: 'The Athletic: NFL Coverage', url: 'https://www.nytimes.com/athletic/nfl/' },
+                    { id: 'ilpost', source: 'Attualità', title: 'Il Post: Le notizie, spiegate bene', url: 'https://www.ilpost.it/' },
+                    { id: 'internazionale', source: 'Esteri', title: 'Internazionale: Il meglio dei giornali', url: 'https://www.internazionale.it/' },
+                    { id: 'ansa', source: 'Agenzia stampa', title: 'ANSA: Agenzia Nazionale Stampa Associata', url: 'https://www.ansa.it/' },
+                    { id: 'ap', source: 'Agenzia stampa', title: 'AP News', url: 'https://apnews.com/' },
+                    { id: 'nyt', source: 'Quotidiano', title: 'The New York Times: Journalism', url: 'https://www.nytimes.com/' },
+                    { id: 'athletic', source: 'NFL', title: 'The Athletic: NFL Coverage', url: 'https://www.nytimes.com/athletic/nfl/' },
                 ];
 
                 if (isSaturday) {
-                    const dacosta = { id: 'dacosta', source: 'Da Costa a Costa', title: 'Da Costa a Costa: Newsletter', url: 'https://www.ilpost.it/newsletter/da-costa-a-costa/' };
+                    const dacosta = { id: 'dacosta', source: 'Newsletter', title: 'Da Costa a Costa: La newsletter di Francesco Costa', url: 'https://www.ilpost.it/newsletter/da-costa-a-costa/' };
                     const ilpost = base.find(h => h.id === 'ilpost');
                     const athletic = base.find(h => h.id === 'athletic');
                     const others = base.filter(h => h.id !== 'ilpost' && h.id !== 'athletic');
@@ -182,7 +182,7 @@
             };
 
             const [headlines, setHeadlines] = useState(() => {
-                const saved = localStorage.getItem('headlines_v2');
+                const saved = localStorage.getItem('headlines_v5');
                 return saved ? JSON.parse(saved) : getInitialHeadlines();
             });
 
@@ -191,7 +191,7 @@
             const [currentTime, setCurrentTime] = useState(new Date());
 
             useEffect(() => {
-                localStorage.setItem('headlines_v2', JSON.stringify(headlines));
+                localStorage.setItem('headlines_v5', JSON.stringify(headlines));
             }, [headlines]);
 
             useEffect(() => {
